@@ -18,10 +18,6 @@
   },
   "homepage": "https://github.com/anishjoshi1999/experiment#readme",
   "dependencies": {
-    "dotenv": "^16.0.3",
-    "ejs-mate": "^4.0.0",
-    "express": "^4.18.2",
-    "mongoose": "^6.8.1",
-    "path": "^0.12.7"
+    "express": "^4.18.2"
   }
 }
