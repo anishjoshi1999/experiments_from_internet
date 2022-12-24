@@ -1,14 +1,16 @@
 const express = require('express')
 const app = express()
-function paginatedResults(model) {
-    return (req, res, next) => {
+const User = require('./models/users')
+const mongoose = require('mongoose')
+const paginatedResults = (model) => {
+    return async (req, res, next) => {
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
         const startIndex = (page - 1) * limit
         const endIndex = page * limit
         const results = {}
 
-        if (endIndex < model.length) {
+        if (endIndex < await model.countDocuments().exec()) {
             results.next = {
                 page: page + 1,
                 limit: limit
@@ -20,11 +22,17 @@ function paginatedResults(model) {
                 limit: limit
             }
         }
+        try {
+            results.results = await model.find().limit(limit).skip(startIndex).exec()
+            res.paginatedResults = results
+            next()
 
-        results.results = model.slice(startIndex, endIndex)
-        res.paginatedResults = results
-        next()
+        } catch (error) {
+            res.status(500).json({ message: error.message })
+
+        }
     }
 }
+
 
 module.exports = paginatedResults
